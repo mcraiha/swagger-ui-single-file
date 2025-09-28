@@ -14,3 +14,7 @@ url: "https://petstore.swagger.io/v2/swagger.json",
 with your own `swagger.json` file.
 
 More details coming later on
+
+## License
+
+swagger-ui-single-file is licensed under [Apache 2.0 license](https://github.com/mcraiha/swagger-ui-single-file/blob/main/LICENSE) because the Swagger UI uses the same license.
