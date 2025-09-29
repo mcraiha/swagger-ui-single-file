@@ -1,5 +1,5 @@
 # swagger-ui-single-file
-Single HTML file version of Swagger UI
+Single HTML file version of [Swagger UI](https://github.com/swagger-api/swagger-ui).
 
 ## Why ?
 
@@ -13,7 +13,11 @@ url: "https://petstore.swagger.io/v2/swagger.json",
 ```
 with your own `swagger.json` file.
 
-More details coming later on
+You can also use tools to automate the process.
+
+### Replace URL with Deno cli tool
+
+If your swagger.json would be in example.com then the command would look like...
 
 ## License
 
