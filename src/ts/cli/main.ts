@@ -90,5 +90,21 @@ else if (Deno.args.length === 2 && Deno.args[0] === "--create-template")
 
     //console.log(indexHtmlText);
     const newIndexHtmlPath = path.join(basePath, "index2.html");
-    await Deno.writeTextFile(newIndexHtmlPath, indexHtmlText);
+    try
+    {
+        await Deno.writeTextFile(newIndexHtmlPath, indexHtmlText, { createNew: true });
+    }
+    catch (error)
+    {
+        if (error instanceof Deno.errors.AlreadyExists)
+        {
+            // Complain that this tool does not overwrite files
+            console.error("File already exists: " + newIndexHtmlPath);
+            console.log("This tool does NOT overwrite any files!");
+        }
+        else
+        {
+            console.error(error);
+        }
+    }
 }
