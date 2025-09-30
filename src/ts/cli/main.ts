@@ -1,4 +1,5 @@
 import * as path from "jsr:@std/path";
+import { exists } from "jsr:@std/fs/exists";
 import { encodeBase64 } from "jsr:@std/encoding/base64";
 
 console.log(Deno.args);
@@ -11,9 +12,15 @@ else if (Deno.args.length === 1)
 {
     // Fill template, default mode
 }
-else if (Deno.args.length === 2 && Deno.args[0] === "--create-template")
+else if (Deno.args.length === 3 && Deno.args[0] === "--create-template")
 {
     const basePath = Deno.args[1];
+    if (false === await exists(basePath, { isDirectory: true }))
+    {
+        console.error("%cParameter: " + basePath + " is not an existing folder / directory!", "color: red");
+        Deno.exit(1);
+    }
+
     console.log("Base path for Swagger UI files: " + basePath);
 
     // HTML file(s)
@@ -89,7 +96,7 @@ else if (Deno.args.length === 2 && Deno.args[0] === "--create-template")
     indexHtmlText = indexHtmlText.replace(`<script src="./swagger-initializer.js" charset="UTF-8"> </script>`, newInitializerJs);
 
     //console.log(indexHtmlText);
-    const newIndexHtmlPath = path.join(basePath, "index2.html");
+    const newIndexHtmlPath = Deno.args[2];
     try
     {
         await Deno.writeTextFile(newIndexHtmlPath, indexHtmlText, { createNew: true });
@@ -106,5 +113,8 @@ else if (Deno.args.length === 2 && Deno.args[0] === "--create-template")
         {
             console.error(error);
         }
+        Deno.exit(1);
     }
+
+    console.log("Output HTML succesfully written to: " + newIndexHtmlPath);
 }
