@@ -24,7 +24,17 @@ Where `https://www.example.com/swagger.json` is your OpenAPI URL and `my-swagger
 
 ### Replace URL with Deno cli tool
 
-If your swagger.json would be in example.com then the command would look like...
+If your swagger.json would be in example.com then the command would look like:
+
+```bash
+deno run --allow-read --allow-write src/ts/cli/main.ts --fill-template templates/index-5-29.html https://example.com/swagger.json my.html
+```
+
+or
+
+```cmd
+deno run --allow-read --allow-write src\ts\cli\main.ts --fill-template templates\index-5-29.html https://example.org/swagger.json my.html
+```
 
 ## License
 

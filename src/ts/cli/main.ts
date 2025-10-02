@@ -8,13 +8,52 @@ if (Deno.args.length === 0)
 {
     console.log("Print help");
 }
-else if (Deno.args.length === 1)
+else if (Deno.args.length === 4 && Deno.args[0] === "--fill-template")
 {
-    // Fill template, default mode
+    // Fill template
+    await FillTemplate(Deno.args);
 }
 else if (Deno.args.length === 3 && Deno.args[0] === "--create-template")
 {
-    const basePath = Deno.args[1];
+    // Create template
+    await CreateTemplate(Deno.args);
+}
+
+async function FillTemplate(args: string[])
+{
+    // Check that template file exists
+    const templateFile: string = args[1];
+    if (false === await exists(templateFile, { isFile: true }))
+    {
+        console.error("%cParameter: " + templateFile + " is not an existing HTML template file!", "color: red");
+        Deno.exit(1);
+    }
+
+    if (args[2].startsWith("http:") || args[2].startsWith("https:"))
+    {
+        // Assume Swagger URL
+        const newSwaggerUrl: string = args[2];
+        const urlToReplace: string = `https://petstore.swagger.io/v2/swagger.json`;
+
+        console.log("Swagger UI index.html file: " + templateFile);
+        let indexHtmlText = await Deno.readTextFile(templateFile);
+        indexHtmlText = indexHtmlText.replace(urlToReplace, newSwaggerUrl);
+
+        const outputHtmlFilePath: string = args[3];
+        await TryToWriteHtmlFile(outputHtmlFilePath, indexHtmlText);
+
+        console.log("Output HTML succesfully written to: " + outputHtmlFilePath);
+    }
+    else
+    {
+        // Assume Swagger file
+        
+    }
+}
+
+async function CreateTemplate(args: string[])
+{
+    const basePath = args[1];
     if (false === await exists(basePath, { isDirectory: true }))
     {
         console.error("%cParameter: " + basePath + " is not an existing folder / directory!", "color: red");
@@ -96,17 +135,24 @@ else if (Deno.args.length === 3 && Deno.args[0] === "--create-template")
     indexHtmlText = indexHtmlText.replace(`<script src="./swagger-initializer.js" charset="UTF-8"> </script>`, newInitializerJs);
 
     //console.log(indexHtmlText);
-    const newIndexHtmlPath = Deno.args[2];
+    const newIndexHtmlPath = args[2];
+    await TryToWriteHtmlFile(newIndexHtmlPath, indexHtmlText);
+
+    console.log("Output HTML succesfully written to: " + newIndexHtmlPath);
+}
+
+async function TryToWriteHtmlFile(filePath: string, htmlContent: string)
+{
     try
     {
-        await Deno.writeTextFile(newIndexHtmlPath, indexHtmlText, { createNew: true });
+        await Deno.writeTextFile(filePath, htmlContent, { createNew: true });
     }
     catch (error)
     {
         if (error instanceof Deno.errors.AlreadyExists)
         {
             // Complain that this tool does not overwrite files
-            console.error("File already exists: " + newIndexHtmlPath);
+            console.error("File already exists: " + filePath);
             console.log("This tool does NOT overwrite any files!");
         }
         else
@@ -115,6 +161,4 @@ else if (Deno.args.length === 3 && Deno.args[0] === "--create-template")
         }
         Deno.exit(1);
     }
-
-    console.log("Output HTML succesfully written to: " + newIndexHtmlPath);
 }
