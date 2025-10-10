@@ -1,4 +1,5 @@
 # swagger-ui-single-file
+
 Single HTML file version of [Swagger UI](https://github.com/swagger-api/swagger-ui).
 
 ## Why ?
@@ -39,6 +40,22 @@ deno run --allow-read --allow-write src\ts\cli\main.ts --fill-template templates
 ```
 
 Where `https://www.example.com/swagger.json` is your OpenAPI URL and `my.html` is the name of the output file.
+
+### Create template file
+
+If you want to create single HTML template file then the command would look like:
+
+```bash
+deno run --allow-read --allow-write src/ts/cli/main.ts --create-template swagger-ui-5.29.0/dist template.html
+```
+
+or
+
+```cmd
+deno run --allow-read --allow-write src\ts\cli\main.ts --create-template swagger-ui-5.29.0\dist template.html
+```
+
+Where `swagger-ui-5.29.0/dist` is folder of Swagger UI release that has the UI files and `template.html` is the name of the output template file.
 
 ## License
 
