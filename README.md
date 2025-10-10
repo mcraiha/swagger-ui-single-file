@@ -17,6 +17,8 @@ You can also use tools to automate the process.
 
 ### Replace URL with sed
 
+If your swagger.json would be in example.com then the command would look like:
+
 ```bash
 sed 's+https://petstore.swagger.io/v2/swagger.json+https://www.example.com/swagger.json+g' index-5-29.html > my-swagger.html
 ```
@@ -35,6 +37,8 @@ or
 ```cmd
 deno run --allow-read --allow-write src\ts\cli\main.ts --fill-template templates\index-5-29.html https://example.org/swagger.json my.html
 ```
+
+Where `https://www.example.com/swagger.json` is your OpenAPI URL and `my.html` is the name of the output file.
 
 ## License
 
