@@ -41,6 +41,16 @@ deno run --allow-read --allow-write src\ts\cli\main.ts --fill-template templates
 
 Where `https://www.example.com/swagger.json` is your OpenAPI URL and `my.html` is the name of the output file.
 
+### Replace JSON spec with Deno cli tool
+
+If you swagger.json is located in your local machine and you want to embed it into HTML then the command would look like:
+
+```cmd
+deno run --allow-read --allow-write src\ts\cli\main.ts --fill-template templates\index-5-29.html swagger.json embedded.html
+```
+
+Where `swagger.json` is your OpenAPI file and `embedded.html` is the name of the output file.
+
 ### Create template file
 
 If you want to create single HTML template file then the command would look like:

@@ -29,14 +29,15 @@ async function FillTemplate(args: string[])
         Deno.exit(1);
     }
 
+    console.log("Swagger UI index.html file: " + templateFile);
+    let indexHtmlText = await Deno.readTextFile(templateFile);
+
     if (args[2].startsWith("http:") || args[2].startsWith("https:"))
     {
         // Assume Swagger URL
         const newSwaggerUrl: string = args[2];
         const urlToReplace: string = `https://petstore.swagger.io/v2/swagger.json`;
 
-        console.log("Swagger UI index.html file: " + templateFile);
-        let indexHtmlText = await Deno.readTextFile(templateFile);
         indexHtmlText = indexHtmlText.replace(urlToReplace, newSwaggerUrl);
 
         const outputHtmlFilePath: string = args[3];
@@ -46,8 +47,34 @@ async function FillTemplate(args: string[])
     }
     else
     {
-        // Assume Swagger file
-        
+        // Assume Swagger file in JSON
+        const jsonFilename: string = args[2];
+        try
+        {
+            const jsonText = await Deno.readTextFile(jsonFilename);
+            JSON.parse(jsonText)
+            const textToReplace: string = `url: "https://petstore.swagger.io/v2/swagger.json"`;
+            const newText: string = `spec: ${jsonText}`;
+
+            indexHtmlText = indexHtmlText.replace(textToReplace, newText);
+
+            const outputHtmlFilePath: string = args[3];
+            await TryToWriteHtmlFile(outputHtmlFilePath, indexHtmlText);
+
+            console.log("Output HTML succesfully written to: " + outputHtmlFilePath);
+        }
+        catch (error)
+        {
+            if (error instanceof SyntaxError)
+            {
+                console.log("Currently only JSON spec files are supported. Invalid file: " + jsonFilename);
+            }
+            else
+            {
+                console.error(error);
+                Deno.exit(1);
+            }
+        }
     }
 }
 
