@@ -2,11 +2,21 @@ import * as path from "jsr:@std/path";
 import { exists } from "jsr:@std/fs/exists";
 import { encodeBase64 } from "jsr:@std/encoding/base64";
 
-console.log(Deno.args);
+//console.log(Deno.args);
 
-if (Deno.args.length === 0)
+if (Deno.args.length === 0 || (Deno.args.length === 1 && Deno.args[0] === "--help"))
 {
-    console.log("Print help");
+    console.log("CLI tool for creating and filling single HTML file Swagger UI");
+    console.log("Usage:");
+    console.log("");
+    console.log("%c - To fill an existing template with Swagger JSON URL:", "color: cyan");
+    console.log("deno run --allow-read --allow-write src/ts/cli/main.ts --fill-template templates/index-5-29.html https://example.com/swagger.json my.html");
+    console.log("");
+    console.log("%c - To fill an existing template with local Swagger JSON file:", "color: cyan");
+    console.log("deno run --allow-read --allow-write src/ts/cli/main.ts --fill-template templates/index-5-29.html swagger.json embedded.html");
+    console.log("");
+    console.log("%c - To create a new template file from Swagger UI dist files:", "color: cyan");
+    console.log("deno run --allow-read --allow-write src/ts/cli/main.ts --create-template swagger-ui-5.29.0/dist template.html");
 }
 else if (Deno.args.length === 4 && Deno.args[0] === "--fill-template")
 {
@@ -17,6 +27,11 @@ else if (Deno.args.length === 3 && Deno.args[0] === "--create-template")
 {
     // Create template
     await CreateTemplate(Deno.args);
+}
+else
+{
+    console.error(`%cCannot identify command: ${Deno.args[0]}`, "color: red");
+    Deno.exit(1);
 }
 
 async function FillTemplate(args: string[])
