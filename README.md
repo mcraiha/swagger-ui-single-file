@@ -45,6 +45,12 @@ Where `https://www.example.com/swagger.json` is your OpenAPI URL and `my.html` i
 
 If you swagger.json is located in your local machine and you want to embed it into HTML then the command would look like:
 
+```bash
+deno run --allow-read --allow-write src/ts/cli/main.ts --fill-template templates/index-5-29.html swagger.json embedded.html
+```
+
+or
+
 ```cmd
 deno run --allow-read --allow-write src\ts\cli\main.ts --fill-template templates\index-5-29.html swagger.json embedded.html
 ```
