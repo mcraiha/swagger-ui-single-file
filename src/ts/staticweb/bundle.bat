@@ -1,0 +1,1 @@
+deno bundle --platform=browser main.ts -o bundle.js
