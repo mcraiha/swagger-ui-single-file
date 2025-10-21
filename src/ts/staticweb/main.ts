@@ -4,9 +4,12 @@ const filelink = document.getElementById("filelink")!;
 const urleditSection = document.getElementById("urledit")!;
 const fileeditSection = document.getElementById("fileedit")!;
 
+const urlinput = document.getElementById("urlinput")! as HTMLInputElement;
+
 const urlgenerateButton = document.getElementById("urlgenerate")!;
 const filegenerateButton = document.getElementById("filegenerate")!;
 
+const htmlOutputHeader = document.getElementById("htmlOutputHeader")!;
 const htmlOutputFrame = document.getElementById("htmlOutputFrame")! as HTMLIFrameElement;
 
 urllink.addEventListener("click", function() {
@@ -19,8 +22,10 @@ filelink.addEventListener("click", function() {
 
 urlgenerateButton.addEventListener("click", async function() {
     let templateText = await checkDownloadStore();
+    templateText = templateText.replace(`https://petstore.swagger.io/v2/swagger.json`, urlinput.value);
     htmlOutputFrame.srcdoc = templateText;
     htmlOutputFrame.hidden = false;
+    htmlOutputHeader.hidden = false;
 });
 
 const templateFilePrefix: string = "index-5-29";
