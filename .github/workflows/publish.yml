@@ -1,0 +1,43 @@
+# Publish project
+
+name: Publish Deno and push to CloudFlare
+
+on:
+  push:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup repo
+        uses: actions/checkout@v4
+
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Modify HTML
+        run: |
+          current_date=$(date --iso-8601=minutes)
+          git_short_hash=$(git rev-parse --short HEAD)
+          sed -i "s/{0}/$current_date/g" src/ts/staticweb/index.html
+          sed -i "s/{1}/$git_short_hash/g" src/ts/staticweb/index.html
+
+      - name: Build Javascript bundle
+        run: deno bundle --platform=browser src/ts/staticweb/main.ts -o src/ts/staticweb/bundle.js
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 20
+
+      - name: Upload to pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          command: pages deploy src/ts/staticweb --project-name=swagger-ui-single-file
