@@ -75,4 +75,8 @@ Where `swagger-ui-5.29.0/dist` is folder of Swagger UI release that has the UI f
 
 ## License
 
-swagger-ui-single-file is licensed under [Apache 2.0 license](https://github.com/mcraiha/swagger-ui-single-file/blob/main/LICENSE) because the Swagger UI uses the same license.
+Source code is licensed under [Apache 2.0 license](https://github.com/mcraiha/swagger-ui-single-file/blob/main/LICENSE) because the Swagger UI uses the same license.  
+
+CSS style is [MVP.css](https://andybrewer.github.io/mvp/) and it is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License)  
+
+Icon file is combination of 💾 and 🟢 emojis that are from [Twemoji](https://github.com/jdecked/twemoji) project. Their license is [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/)
