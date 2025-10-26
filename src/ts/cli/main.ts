@@ -67,7 +67,7 @@ async function FillTemplate(args: string[])
         try
         {
             const jsonText = await Deno.readTextFile(jsonFilename);
-            JSON.parse(jsonText)
+            JSON.parse(jsonText);
             const textToReplace: string = `url: "https://petstore.swagger.io/v2/swagger.json"`;
             const newText: string = `spec: ${jsonText}`;
 
