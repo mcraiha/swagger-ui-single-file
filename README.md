@@ -6,6 +6,10 @@ Single HTML file version of [Swagger UI](https://github.com/swagger-api/swagger-
 
 Because in some situations it is much easier to deploy/share a single .html file.
 
+## Live
+
+[https://swagger-ui-single-file.raiha.rocks/](https://swagger-ui-single-file.raiha.rocks/)
+
 ## Help
 
 In most cases you want the files in [/templates](/templates) folder. Pick the latest one, open it in your favourite text editor and replace the following line
