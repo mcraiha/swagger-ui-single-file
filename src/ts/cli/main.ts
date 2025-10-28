@@ -107,16 +107,16 @@ async function CreateTemplate(args: string[])
     // HTML file(s)
     const indexHtmlPath = path.join(basePath, "index.html");
     console.log("Swagger UI index.html path: " + indexHtmlPath);
-    let indexHtmlText = await Deno.readTextFile(indexHtmlPath);
+    let indexHtmlText: string = await Deno.readTextFile(indexHtmlPath);
 
     // CSS file(s)
     const swaggerUiCssPath = path.join(basePath, "swagger-ui.css");
     console.log("Swagger UI swagger-ui.css path: " + swaggerUiCssPath);
-    const swaggerUiCssText = await Deno.readTextFile(swaggerUiCssPath);
+    const swaggerUiCssText: string = await Deno.readTextFile(swaggerUiCssPath);
 
     const indexCssPath = path.join(basePath, "index.css");
     console.log("Swagger UI index.css path: " + indexCssPath);
-    const indexCssText = await Deno.readTextFile(indexCssPath);
+    const indexCssText: string = await Deno.readTextFile(indexCssPath);
 
     // Favicon file(s)
     const favIcon32Path = path.join(basePath, "favicon-32x32.png");
@@ -130,22 +130,19 @@ async function CreateTemplate(args: string[])
     // Javascript file(s)
     const bundleJsPath = path.join(basePath, "swagger-ui-bundle.js");
     console.log("Swagger UI swagger-ui-bundle.js path: " + bundleJsPath);
-    const bundleJsText = await Deno.readTextFile(bundleJsPath);
+    const bundleJsText: string = await Deno.readTextFile(bundleJsPath);
 
     const standalonePresetJsPath = path.join(basePath, "swagger-ui-standalone-preset.js");
     console.log("Swagger UI swagger-ui-standalone-preset.js path: " + standalonePresetJsPath);
-    const standalonePresetJsText = await Deno.readTextFile(standalonePresetJsPath);
+    const standalonePresetJsText: string = await Deno.readTextFile(standalonePresetJsPath);
 
     const initializerJsPath = path.join(basePath, "swagger-initializer.js");
     console.log("Swagger UI swagger-initializer.js path: " + initializerJsPath);
-    const initializerJsText = await Deno.readTextFile(initializerJsPath);
+    const initializerJsText: string = await Deno.readTextFile(initializerJsPath);
 
     // Base64 needed
     const favIcon32Base64 = encodeBase64(favIcon32Bytes);
     const favIcon16Base64 = encodeBase64(favIcon16Bytes);
-
-    const bundleJsBase64 = encodeBase64(bundleJsText);
-    const standalonePresetJsBase64 = encodeBase64(standalonePresetJsText);
 
     // Replace operations
     indexHtmlText = indexHtmlText.replace(`<link rel="stylesheet" type="text/css" href="./swagger-ui.css" />`, "");
@@ -163,20 +160,21 @@ async function CreateTemplate(args: string[])
     const newIcon16 = `<link href="data:image/x-icon;base64,${favIcon16Base64}" rel="icon" type="image/x-icon" />`;
     indexHtmlText = indexHtmlText.replace(`<link rel="icon" type="image/png" href="./favicon-16x16.png" sizes="16x16" />`, newIcon16);
 
-    const newBundleJs = `<script type="text/javascript" src="data:text/javascript;base64,${bundleJsBase64}"></script>`;
-    indexHtmlText = indexHtmlText.replace(`<script src="./swagger-ui-bundle.js" charset="UTF-8"> </script>`, newBundleJs);
+    const newBundleJs: string = `<script type="text/javascript" charset="UTF-8"> 
+    ${bundleJsText} 
+    </script>`;
+    indexHtmlText = indexHtmlText.replace(`<script src="./swagger-ui-bundle.js" charset="UTF-8"> </script>`, () => newBundleJs);
 
-    const newStandalonePresetJs = `<script type="text/javascript" src="data:text/javascript;base64,${standalonePresetJsBase64}"></script>`;
-    indexHtmlText = indexHtmlText.replace(`<script src="./swagger-ui-standalone-preset.js" charset="UTF-8"> </script>`, newStandalonePresetJs);
+    const newStandalonePresetJs = `<script type="text/javascript" charset="UTF-8">
+    ${standalonePresetJsText}
+    </script>`;
+    indexHtmlText = indexHtmlText.replace(`<script src="./swagger-ui-standalone-preset.js" charset="UTF-8"> </script>`, () => newStandalonePresetJs);
 
-    const newInitializerJs = `
-    <script>
+    const newInitializerJs = `<script type="text/javascript" charset="UTF-8">
     ${initializerJsText}
-    </script>
-    `;
-    indexHtmlText = indexHtmlText.replace(`<script src="./swagger-initializer.js" charset="UTF-8"> </script>`, newInitializerJs);
+    </script>`;
+    indexHtmlText = indexHtmlText.replace(`<script src="./swagger-initializer.js" charset="UTF-8"> </script>`, () => newInitializerJs);
 
-    //console.log(indexHtmlText);
     const newIndexHtmlPath = args[2];
     await TryToWriteHtmlFile(newIndexHtmlPath, indexHtmlText);
 
