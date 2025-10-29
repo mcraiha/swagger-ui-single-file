@@ -59,8 +59,7 @@ inputFile.addEventListener("change", async function() {
     }
 });
 
-
-const templateFilePrefix: string = "index-5-29";
+const templateFilePrefix: string = "index-5-30";
 
 function selectUrlEdit() {
     showUrlEditSection();
@@ -88,33 +87,99 @@ function hideFileEditSection() {
     fileeditSection.hidden = true;
 }
 
-const localStorageTemplateKey: string = "template";
+enum SupportedCompression {
+  None = 0,
+  Brotli,
+  GZip
+}
 
 async function checkDownloadStore(): Promise<string> {
     let returnString: string = "";
-    if (localStorage.getItem(localStorageTemplateKey) === null) {
-        // Fetch the template
-        try
-        {
-            const response = await fetch(`${templateFilePrefix}.html`);
-            const text = await response.text();
-            if (text.startsWith("<!--")) {
-                localStorage.setItem(localStorageTemplateKey, text);
-                returnString = text;
+    if (localStorage.getItem(templateFilePrefix) === null) {
+        // Check supported decompression format
+        const chosenFormat: SupportedCompression = detectSupportedDecompression();
+
+        // Fetch the template based on supported compression formats
+        if (chosenFormat === SupportedCompression.Brotli) {
+            try
+            {
+                const response = await fetch(`${templateFilePrefix}.br`);
+                const blob = await response.blob();
+                const decoded = blob.stream().pipeThrough(new DecompressionStream("brotli"));
+                const text = await new Response(decoded).text();
+                if (text.startsWith("<!--")) {
+                    localStorage.setItem(templateFilePrefix, text);
+                    returnString = text;
+                }
+            }
+            catch (error) {
+                console.error(error);
             }
         }
-        catch (error) {
-            console.error(error);
+        else if (chosenFormat === SupportedCompression.GZip) {
+            try
+            {
+                const response = await fetch(`${templateFilePrefix}.gz`);
+                const blob = await response.blob();
+                const decoded = blob.stream().pipeThrough(new DecompressionStream("gzip"));
+                const text = await new Response(decoded).text();
+                if (text.startsWith("<!--")) {
+                    localStorage.setItem(templateFilePrefix, text);
+                    returnString = text;
+                }
+            }
+            catch (error) {
+                console.error(error);
+            }
+        }
+        else {
+            // No compression
+            try
+            {
+                const response = await fetch(`${templateFilePrefix}.html`);
+                const text = await response.text();
+                if (text.startsWith("<!--")) {
+                    localStorage.setItem(templateFilePrefix, text);
+                    returnString = text;
+                }
+            }
+            catch (error) {
+                console.error(error);
+            }
         }
     }
     else {
-        returnString = localStorage.getItem(localStorageTemplateKey)!;
+        returnString = localStorage.getItem(templateFilePrefix)!;
     }
 
     return returnString;
 }
 
-function handleDownload() {
+function detectSupportedDecompression(): SupportedCompression {
+    try
+    {
+        new DecompressionStream("brotli");
+        return SupportedCompression.Brotli;
+    }
+    catch (error)
+    {
+        console.log(error);
+    }
+
+    try
+    {
+        new DecompressionStream("gzip");
+        return SupportedCompression.GZip;
+    }
+    catch (error)
+    {
+        console.log(error);
+    }
+
+    return SupportedCompression.None;
+}
+
+function handleDownload(): void {
     const htmlText: string = htmlOutputFrame.srcdoc;
     const element: HTMLAnchorElement = document.createElement('a');
     const file = new Blob([htmlText], {type: 'text/html'});
