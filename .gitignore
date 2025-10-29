@@ -137,3 +137,5 @@ dist
 
 # Custom
 src/ts/staticweb/*.js
+*.gz
+*.br
