@@ -34,16 +34,16 @@ jobs:
         run: deno bundle --platform=browser src/ts/staticweb/main.ts -o src/ts/staticweb/bundle.js
 
       - name: Copy template
-        run: cp templates/index-5-30.html src/ts/staticweb/index-5-30.html
+        run: cp templates/index-5-31.html src/ts/staticweb/index-5-31.html
 
       - name: Gzip template
-        run: gzip -9 -c templates/index-5-30.html > src/ts/staticweb/index-5-30.gz
+        run: gzip -9 -c templates/index-5-31.html > src/ts/staticweb/index-5-31.gz
 
       - name: Install brotli
         run: sudo apt install -y brotli
 
       - name: brotli template
-        run: brotli -q 11 -k templates/index-5-30.html -o src/ts/staticweb/index-5-30.br
+        run: brotli -q 11 -k templates/index-5-31.html -o src/ts/staticweb/index-5-31.br
 
       - uses: actions/setup-node@v5
         with:
