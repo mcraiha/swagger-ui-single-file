@@ -16,7 +16,7 @@ In most cases you want the files in [/templates](/templates) folder. Pick the la
 ```js
 url: "https://petstore.swagger.io/v2/swagger.json",
 ```
-with your own `swagger.json` file.
+with your own `swagger.json` file URL, e.g. `https://www.example.com/swagger.json`.
 
 You can also use tools to automate the process.
 
@@ -61,7 +61,7 @@ deno run --allow-read --allow-write src\ts\cli\main.ts --fill-template templates
 
 Where `swagger.json` is your OpenAPI file and `embedded.html` is the name of the output file.
 
-### Create template file
+### Create template .html file
 
 If you want to create single HTML template file then the command would look like:
 
