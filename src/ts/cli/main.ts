@@ -44,7 +44,7 @@ async function FillTemplate(args: string[])
         Deno.exit(1);
     }
 
-    console.log("Swagger UI index.html file: " + templateFile);
+    console.log("Swagger UI templated index.html file: " + templateFile);
     let indexHtmlText = await Deno.readTextFile(templateFile);
 
     if (args[2].startsWith("http:") || args[2].startsWith("https:"))
