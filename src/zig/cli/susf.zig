@@ -66,19 +66,44 @@ pub fn fillTemplate(init: std.process.Init, writer: *Io.Writer, allocator: std.m
 	{
 		// Assume Swagger URL
 		const urlToReplace = "https://petstore.swagger.io/v2/swagger.json";
-		const new_len = templateHtmlContent.len - urlToReplace.len + urlOrFilename.len;
+		const final_html_len = templateHtmlContent.len - urlToReplace.len + urlOrFilename.len;
 
 		 // Allocate a buffer for the result
-		const indexHtmlText = try allocator.alloc(u8, new_len);
+		const indexHtmlText = try allocator.alloc(u8, final_html_len);
 		defer allocator.free(indexHtmlText);
 
 		_ = std.mem.replace(u8, templateHtmlContent, urlToReplace, urlOrFilename, indexHtmlText);
-		//_ = try writer.write(indexHtmlText);
 		try tryToWriteHtmlFile(init, outputHtmlFilename, indexHtmlText);
 	}
 	else
 	{
 		// Assume Swagger file in JSON
+		const openApiContent = Io.Dir.cwd().readFileAlloc(init.io, urlOrFilename, allocator, .unlimited) catch {
+			std.log.err("Failed to open file: {s}\n", .{urlOrFilename});
+			return;
+		};
+
+		const validJson = try std.json.Scanner.validate(allocator, openApiContent);
+
+		if (!validJson)
+		{
+			std.log.err("Currently only JSON spec files are supported. Invalid file: {s}\n", .{urlOrFilename});
+			return;
+		}
+
+		const textToReplace = "url: \"https://petstore.swagger.io/v2/swagger.json\"";
+		const specText = "spec: ";
+		const joinTogether = &[_][]const u8{ specText, openApiContent };
+		const joined = try std.mem.concat(allocator, u8, joinTogether);
+
+		const final_html_len = templateHtmlContent.len - textToReplace.len + joined.len;
+
+		 // Allocate a buffer for the result
+		const indexHtmlText = try allocator.alloc(u8, final_html_len);
+		defer allocator.free(indexHtmlText);
+
+		_ = std.mem.replace(u8, templateHtmlContent, textToReplace, joined, indexHtmlText);
+		try tryToWriteHtmlFile(init, outputHtmlFilename, indexHtmlText);
 	}
 
 	_ = try writer.print("Output HTML succesfully written to: {s}", .{outputHtmlFilename} );
