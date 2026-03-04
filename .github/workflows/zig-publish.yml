@@ -1,0 +1,16 @@
+# Publish project as executable files for Windows, Linux and Mac
+
+on:
+  push:
+     tags:
+      - v1.*           # Push events to v1.0, v1.1, and v1.9 tags
+      - v0.*           # Push events to v0.1, and v0.9 tags
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Build and Test
+    steps:
+      - uses: actions/checkout@v3
+      - uses: mlugg/setup-zig@v2
+      - run: zig test src\zig\cli\susf.zig
