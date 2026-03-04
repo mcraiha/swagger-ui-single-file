@@ -1,10 +1,13 @@
-# Publish project
+# Publish project as static website
 
 name: Publish Deno and push to CloudFlare
 
 on:
   push:
     branches: ["main"]
+    paths: 
+    - 'src/ts/staticweb/**'
+    - 'templates/**'
 
 permissions:
   contents: read
