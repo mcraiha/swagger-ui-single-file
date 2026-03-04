@@ -178,7 +178,7 @@ async function CreateTemplate(args: string[])
     const newIndexHtmlPath = args[2];
     await TryToWriteHtmlFile(newIndexHtmlPath, indexHtmlText);
 
-    console.log("Output HTML succesfully written to: " + newIndexHtmlPath);
+    console.log("Output HTML template succesfully written to: " + newIndexHtmlPath);
 }
 
 async function TryToWriteHtmlFile(filePath: string, htmlContent: string)
