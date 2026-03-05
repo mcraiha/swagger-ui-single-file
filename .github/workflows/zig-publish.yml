@@ -11,6 +11,50 @@ jobs:
     runs-on: ubuntu-latest
     name: Build and Test
     steps:
-      - uses: actions/checkout@v3
-      - uses: mlugg/setup-zig@v2
-      - run: zig test src\zig\cli\susf.zig
+      - name: Setup repp
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Install zig binary
+        uses: mlugg/setup-zig@v2
+
+      - name: Fill buildinfo.txt
+        run: |
+          current_date=$(date --iso-8601=minutes)
+          git_short_hash=$(git rev-parse --short HEAD)
+          zig_version=$(zig version)
+          rm src/zig/cli/buildinfo.txt
+          echo "Version: $GITHUB_REF_NAME" >> src/zig/cli/buildinfo.txt
+          echo "Build time: $current_date" >> src/zig/cli/buildinfo.txt
+          echo "Short hash: $git_short_hash" >> src/zig/cli/buildinfo.txt
+          echo "Zig version: $zig_version" >> src/zig/cli/buildinfo.txt
+
+      - name: Run tests
+        run: zig test src/zig/cli/susf.zig
+
+      - name: Build and zip x86_64 Windows
+        run:  | 
+          zig build-exe src/zig/cli/susf.zig -O ReleaseSmall -target x86_64-windows -femit-bin=susf.exe
+          zip -9 windows-x86_64.zip susf.exe
+          rm susf.exe
+
+      - name: Build and zip x86_64 Linux
+        run:  | 
+          zig build-exe src/zig/cli/susf.zig -O ReleaseSmall -target x86_64-linux -femit-bin=susf
+          zip -9 linux-x86_64.zip susf
+          rm susf
+
+      - name: Build and zip aarch64 Mac
+        run:  | 
+          zig build-exe src/zig/cli/susf.zig -O ReleaseSmall -target aarch64-macos -femit-bin=susf
+          zip -9 mac-aarch64.zip susf
+          rm susf
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            windows-x86_64.zip
+            linux-x86_64.zip
+            mac-aarch64.zip
