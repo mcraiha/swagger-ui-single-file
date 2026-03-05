@@ -17,11 +17,13 @@ pub fn main(init: std.process.Init) !void {
 
 	if (args.len == 1)
 	{
-		try printHelp(stdout_writer);
+		const buildinfo = @embedFile("buildinfo.txt");
+		try printHelp(stdout_writer, buildinfo);
 	}
 	else if (args.len == 2 and std.mem.eql(u8, args[1], "--help"))
 	{
-		try printHelp(stdout_writer);
+		const buildinfo = @embedFile("buildinfo.txt");
+		try printHelp(stdout_writer, buildinfo);
 	}
 	else if (args.len == 5 and std.mem.eql(u8, args[1], "--fill-template"))
 	{
@@ -39,7 +41,8 @@ pub fn main(init: std.process.Init) !void {
 	try stdout_writer.flush(); // Don't forget to flush!
 }
 
-pub fn printHelp(writer: *Io.Writer) Io.Writer.Error!void {
+pub fn printHelp(writer: *Io.Writer, buildInfo: []const u8) Io.Writer.Error!void {
+	_ = try writer.write(buildInfo);
 	_ = try writer.write("susf is a CLI tool for creating and filling single HTML file Swagger UI\n");
 	_ = try writer.write("Usage:\n");
 	_ = try writer.write("\n");
