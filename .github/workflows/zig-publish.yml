@@ -18,6 +18,8 @@ jobs:
 
       - name: Install zig binary
         uses: mlugg/setup-zig@v2
+        with:
+          version: master
 
       - name: Fill buildinfo.txt
         run: |
