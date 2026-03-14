@@ -6,6 +6,12 @@ Single HTML file version of [Swagger UI](https://github.com/swagger-api/swagger-
 
 Because in some situations it is much easier to deploy/share a single .html file.
 
+## Three different tools
+
+- Browser tool (Javascript + HTML)
+- CLI for [Deno](https://deno.com/), which is a .ts file
+- CLI tool made with [zig](https://ziglang.org/), binary can be downloaded from [Releases](https://github.com/mcraiha/swagger-ui-single-file/releases)
+
 ## Live
 
 [https://swagger-ui-single-file.raiha.rocks/](https://swagger-ui-single-file.raiha.rocks/) aka browser tool
