@@ -59,7 +59,7 @@ inputFile.addEventListener("change", async function() {
     }
 });
 
-const templateFilePrefix: string = "index-5-31";
+const templateFilePrefix: string = "index-5-32";
 
 function selectUrlEdit() {
     showUrlEditSection();
@@ -188,4 +188,4 @@ function handleDownload(): void {
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
-  };
+};
