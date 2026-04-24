@@ -12,14 +12,14 @@ jobs:
     name: Build and Test
     steps:
       - name: Setup repp
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           lfs: true
 
       - name: Install zig binary
         uses: mlugg/setup-zig@v2
         with:
-          version: master
+          version: 0.16.0
 
       - name: Fill buildinfo.txt
         run: |
